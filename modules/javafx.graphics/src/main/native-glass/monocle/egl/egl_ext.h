@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,15 +22,22 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-package javafx.scene.control;
+#ifndef __EGL_EXT__
+#define __EGL_EXT__
+#include <jni.h>
+extern jlong getNativeWindowHandle(const char *v);
+extern jlong getEglDisplayHandle();
+extern jboolean doEglInitialize(void* handle);
+extern jboolean doEglBindApi(int api);
+extern jlong doEglChooseConfig (jlong eglDisplay, int* attribs);
 
-public class TableColumnShim {
+extern jlong doEglCreateWindowSurface(jlong eglDisplay, jlong config,
+     jlong nativeWindow);
 
-    public static void setTableView(TableColumn tc, TableView tv) {
-        tc.setTableView(tv);
-    }
+extern jlong doEglCreateContext(jlong eglDisplay, jlong config);
 
-    public static final double DEFAULT_WIDTH = TableColumnBase.DEFAULT_WIDTH;
-    public static final double DEFAULT_MIN_WIDTH = TableColumnBase.DEFAULT_MIN_WIDTH;
-    public static final double DEFAULT_MAX_WIDTH = TableColumnBase.DEFAULT_MAX_WIDTH;
-}
+extern jboolean doEglMakeCurrent(jlong eglDisplay, jlong drawSurface,
+     jlong readSurface, jlong eglContext);
+
+extern jboolean doEglSwapBuffers(jlong eglDisplay, jlong eglSurface);
+#endif // EGL_EXT

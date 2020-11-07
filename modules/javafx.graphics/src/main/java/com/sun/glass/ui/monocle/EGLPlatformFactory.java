@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,15 +22,29 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-package javafx.scene.control;
+package com.sun.glass.ui.monocle;
 
-public class TableColumnShim {
+public class EGLPlatformFactory extends NativePlatformFactory {
 
-    public static void setTableView(TableColumn tc, TableView tv) {
-        tc.setTableView(tv);
+    @Override
+    protected boolean matches() {
+        return true;
     }
 
-    public static final double DEFAULT_WIDTH = TableColumnBase.DEFAULT_WIDTH;
-    public static final double DEFAULT_MIN_WIDTH = TableColumnBase.DEFAULT_MIN_WIDTH;
-    public static final double DEFAULT_MAX_WIDTH = TableColumnBase.DEFAULT_MAX_WIDTH;
+    @Override
+    protected int getMajorVersion() {
+        return 1;
+    }
+
+    @Override
+    protected int getMinorVersion() {
+        return 0;
+    }
+
+    @Override
+    protected NativePlatform createNativePlatform() {
+        return new EGLPlatform();
+    }
+
+
 }

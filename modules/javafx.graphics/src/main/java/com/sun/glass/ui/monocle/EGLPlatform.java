@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,15 +22,32 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-package javafx.scene.control;
+package com.sun.glass.ui.monocle;
 
-public class TableColumnShim {
+public class EGLPlatform extends LinuxPlatform {
 
-    public static void setTableView(TableColumn tc, TableView tv) {
-        tc.setTableView(tv);
+    /**
+     * Create an <code>EGLPlatform</code>. If a library with specific native code is needed for this platform,
+     * it will be downloaded now. The system property <code>monocle.egl.lib</code> can be used to define the
+     * name of the library that should be loaded.
+     */
+    public EGLPlatform() {
+        String lib = System.getProperty("monocle.egl.lib");
+        if (lib != null) {
+            long handle = LinuxSystem.getLinuxSystem().dlopen(lib, LinuxSystem.RTLD_LAZY | LinuxSystem.RTLD_GLOBAL);
+            if (handle == 0) {
+                throw new UnsatisfiedLinkError("EGLPlatform failed to load the requested library " + lib);
+            }
+        }
     }
 
-    public static final double DEFAULT_WIDTH = TableColumnBase.DEFAULT_WIDTH;
-    public static final double DEFAULT_MIN_WIDTH = TableColumnBase.DEFAULT_MIN_WIDTH;
-    public static final double DEFAULT_MAX_WIDTH = TableColumnBase.DEFAULT_MAX_WIDTH;
+    @Override
+    public synchronized AcceleratedScreen getAcceleratedScreen(int[] attributes) throws GLException {
+        if (accScreen == null) {
+            accScreen = new EGLAcceleratedScreen(attributes);
+        }
+        return accScreen;
+
+    }
+
 }
